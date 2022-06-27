@@ -1,4 +1,7 @@
-%define soname 0
+
+%define major 0
+%define libname %mklibname backtrace %{major}
+%define devname %mklibname backtrace -d
 
 %define git 20220406
 
@@ -31,40 +34,41 @@ In other words, it supports GNU/Linux, *BSD, macOS, Windows, and AIX.
 The library is written to make it straightforward to add support for other object file and debugging formats.
 The library relies on the C++ unwind API defined at https://itanium-cxx-abi.github.io/cxx-abi/abi-eh.html This API is provided by GCC and clang.
 
-%package -n %{name}%{soname}
+%package -n %{libname}
 Summary:        Backtrace C library
 Group:          System/Libraries
+Provides:       backstrace
 
-%description -n %{name}%{soname}
+%description -n %{libname}
 This is a C library that may be linked into a C/C++ program to produce symbolic backtraces.
 
-%package devel
+%package -n %{devname}
 Summary:        Development files for %{name}
 Group:          Development/Libraries/C and C++
-Requires:       %{name}%{soname} = %{version}
+Requires:       %{libname} = %{version}-%{release}
+Provides:       backstrace-devel
 
-%description devel
+%description -n %{devname}
 The %{name}-devel package contains libraries and header files for developing applications that use %{name}.
 
 %prep
-%setup -q
+%autosetup -p1
 
 %build
-%{_bindir}/autoreconf -fi
+autoreconf -fi
 %configure --disable-static --enable-shared --enable-silent-rules
-%{__make} %{?_smp_mflags}
+%make_build
 
 %install
-%{__make} install DESTDIR=%{buildroot}
+%make_install
 find %{buildroot} -name '*.la' -exec %{__rm} -f {} ';'
 
-%files -n %{name}%{soname}
-%defattr(-,root,root,-)
-%{_libdir}/*.so.*
+%files -n %{libname}
+%{_libdir}/*.so.%{major}.*
 
-%files devel
-%defattr(-,root,root,-)
-%{_includedir}/*.h
-%{_libdir}/*.so
+%files -n %{devname}
 %doc README.md
 %license LICENSE
+%{_includedir}/*.h
+%{_libdir}/*.so
+
