@@ -64,7 +64,7 @@ autoreconf -fi
 find %{buildroot} -name '*.la' -exec %{__rm} -f {} ';'
 
 %files -n %{libname}
-%{_libdir}/*.so.%{major}.*
+%{_libdir}/*.so.%{major}*
 
 %files -n %{devname}
 %doc README.md
