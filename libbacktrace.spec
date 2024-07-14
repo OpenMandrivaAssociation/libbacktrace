@@ -3,7 +3,7 @@
 %define libname %mklibname backtrace %{major}
 %define devname %mklibname backtrace -d
 
-%define git 20220406
+%define git 20240714
 
 Name:           libbacktrace
 Version:        1.0.0
@@ -12,11 +12,8 @@ Summary:        A C library that may be linked into a C/C++ program to produce s
 License:        BSD
 Group:          System/Libraries
 URL:            https://github.com/ianlancetaylor/libbacktrace
-Source0:        https://github.com/ianlancetaylor/libbacktrace/archive/%{version}/%{name}-%{version}.tar.gz
-
-BuildRequires:  automake
-BuildRequires:  libtool
-
+Source0:        https://github.com/ianlancetaylor/libbacktrace/archive/refs/heads/master.tar.gz#/%{name}-%{git}.tar.gz
+BuildSystem:	autotools
 
 %description
 A C library that may be linked into a C/C++ program to produce symbolic backtraces
@@ -51,18 +48,6 @@ Provides:       backstrace-devel
 %description -n %{devname}
 The %{name}-devel package contains libraries and header files for developing applications that use %{name}.
 
-%prep
-%autosetup -p1
-
-%build
-autoreconf -fi
-%configure --disable-static --enable-shared --enable-silent-rules
-%make_build
-
-%install
-%make_install
-find %{buildroot} -name '*.la' -exec %{__rm} -f {} ';'
-
 %files -n %{libname}
 %{_libdir}/*.so.%{major}*
 
@@ -71,4 +56,3 @@ find %{buildroot} -name '*.la' -exec %{__rm} -f {} ';'
 %license LICENSE
 %{_includedir}/*.h
 %{_libdir}/*.so
-
